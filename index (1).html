@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC 2026 Ultimate Pro - Gopal Ghosh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-purple: #9d50bb;
+            --glass: rgba(255, 255, 255, 0.08);
+            --gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020205;
+            color: white;
+            font-family: 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* প্রিমিয়াম এনিমেটেড টাইমার */
+        .timer-card {
+            grid-column: 1 / -1;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            border: 2px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2), inset 0 0 20px rgba(255,255,255,0.05);
+            animation: pulseGlow 5s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { border-color: rgba(0, 210, 255, 0.3); box-shadow: 0 0 30px rgba(0, 210, 255, 0.2); }
+            50% { border-color: var(--neon-purple); box-shadow: 0 0 50px rgba(157, 80, 187, 0.3); }
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .time-unit {
+            background: rgba(0,0,0,0.6);
+            padding: 20px;
+            border-radius: 25px;
+            min-width: 110px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
+        }
+
+        .time-unit:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
+
+        .time-unit h2 { font-family: 'Orbitron'; font-size: 2.8rem; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+        .time-unit p { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* ডেইলি টাস্ক কার্ড */
+        .task-card {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 35px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .rank-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-group input {
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 18px; border-radius: 15px; color: white; outline: none;
+        }
+
+        .task-item {
+            background: rgba(255,255,255,0.03);
+            padding: 15px; border-radius: 18px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid transparent; transition: 0.3s;
+        }
+
+        .task-item.done { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); opacity: 0.7; }
+
+        .btn {
+            background: var(--neon-blue); border: none; padding: 10px 20px;
+            border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-blue); }
+
+        /* অভিনন্দন স্ক্রিন */
+        .celebration {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 9999; text-align: center;
+        }
+
+        /* নিচে তোমার নাম */
+        .footer { margin-top: auto; padding: 40px 0; text-align: center; }
+        .dev-name { font-family: 'Orbitron'; font-size: 2.5rem; letter-spacing: 5px; color: white; text-shadow: 0 0 25px var(--neon-blue); }
+
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="dashboard">
+        <div class="timer-card">
+            <div class="badge">MISSION: HSC 2026 VICTORY</div>
+            <p style="font-size: 1.4rem; margin: 20px 0; font-weight: 600;">"বিশ্বাস রাখো বুকের ভেতর প্রত্যয় অনুভবে, স্বপ্ন জয়ের পথে বিজয় তোমারি হবে।"</p>
+            
+            <div class="countdown-grid">
+                <div class="time-unit"><h2 id="d">00</h2><p>দিন</p></div>
+                <div class="time-unit"><h2 id="h">00</h2><p>ঘণ্টা</p></div>
+                <div class="time-unit"><h2 id="m">00</h2><p>মিনিট</p></div>
+                <div class="time-unit"><h2 id="s">00</h2><p>সেকেন্ড</p></div>
+            </div>
+            
+            <p style="margin-top: 25px; color: #00ff88; letter-spacing: 1px;">🎯 "দেরি না করে আজকে থেকেই শুরু করো!"</p>
+        </div>
+
+        <div class="task-card">
+            <div class="rank-info">
+                <h3>📖 ডেইলি স্টাডি গোল</h3>
+                <span id="rankBadge" class="badge" style="background: var(--gold); color: black;">Rank: Newbie</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="আজকের পড়া যোগ করো...">
+                <button class="btn" onclick="addTask()">Add</button>
+            </div>
+            <div id="taskList"></div>
+        </div>
+
+        <div class="task-card" style="text-align: center;">
+            <h3>📊 লেভেল প্রগ্রেস</h3>
+            <div style="font-size: 4rem; font-family: 'Orbitron'; margin: 15px 0; color: var(--neon-blue);" id="lvl">1</div>
+            <div style="height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 20px;">
+                <div id="progBar" style="width: 0%; height: 100%; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); border-radius: 10px; transition: 0.8s;"></div>
+            </div>
+            <button class="btn" onclick="clearAll()" style="background: #ff4757; color: white;">সব ক্লিয়ার করুন</button>
+        </div>
+    </div>
+
+    <div id="celebrate" class="celebration">
+        <h1 style="font-size: 5rem; color: var(--gold); margin-bottom: 10px;">অসাধারণ! 🎉</h1>
+        <p style="font-size: 1.8rem;">গোপাল ঘোষ, আপনি আজকের সব লক্ষ্য পূরণ করেছেন!</p>
+        <button class="btn" style="margin-top: 30px; padding: 15px 40px;" onclick="closeCelebration()">মিশন চালিয়ে যান</button>
+    </div>
+
+    <audio id="successSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+    <div class="footer">
+        <p style="color: rgba(255,255,255,0.4); letter-spacing: 5px; font-size: 0.8rem;">CHIEF ARCHITECT</p>
+        <h2 class="dev-name">GOPAL GHOSH</h2>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // ১. টাইমার লজিক
+        function updateTimer() {
+            const target = new Date("July 1, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+            if(diff < 0) return;
+            document.getElementById('d').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('h').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('m').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('s').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+        }
+        setInterval(updateTimer, 1000);
+
+        // ২. টাস্ক ম্যানেজমেন্ট (Local Storage সহ)
+        let tasks = JSON.parse(localStorage.getItem('gopalTasks')) || [];
+
+        function addTask() {
+            const val = document.getElementById('taskInput').value;
+            if(!val) return;
+            tasks.push({ text: val, done: false });
+            saveAndRender();
+            document.getElementById('taskInput').value = '';
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('gopalTasks', JSON.stringify(tasks));
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            let completed = 0;
+
+            tasks.forEach((task, i) => {
+                if(task.done) completed++;
+                const item = document.createElement('div');
+                item.className = `task-item ${task.done ? 'done' : ''}`;
+                item.innerHTML = `<span>${task.text}</span> <button class="btn" onclick="toggleTask(${i})" style="padding: 5px 12px;">${task.done ? '✅' : 'Done'}</button>`;
+                list.appendChild(item);
+            });
+
+            // র‍্যাঙ্ক ও লেভেল আপডেট
+            const progress = tasks.length > 0 ? (completed / tasks.length) * 100 : 0;
+            document.getElementById('progBar').style.width = progress + '%';
+            document.getElementById('lvl').innerText = Math.floor(completed / 2) + 1;
+            
+            let rank = "Newbie";
+            if(completed >= 3) rank = "Scholar";
+            if(completed >= 6) rank = "Master";
+            if(completed >= 10) rank = "Legend";
+            document.getElementById('rankBadge').innerText = "Rank: " + rank;
+
+            // অভিনন্দন চেক
+            if(completed === tasks.length && tasks.length > 0 && !sessionStorage.getItem('notified')) {
+                document.getElementById('celebrate').style.display = 'flex';
+                document.getElementById('successSound').play();
+                sessionStorage.setItem('notified', 'true');
+            }
+        }
+
+        function toggleTask(i) {
+            tasks[i].done = !tasks[i].done;
+            saveAndRender();
+        }
+
+        function clearAll() {
+            tasks = [];
+            sessionStorage.removeItem('notified');
+            saveAndRender();
+        }
+
+        function closeCelebration() { document.getElementById('celebrate').style.display = 'none'; }
+
+        // ৩. ব্যাকগ্রাউন্ড ইফেক্ট
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 120 }, "size": { "value": 2 }, "move": { "speed": 1 } }
+        });
+
+        saveAndRender();
+        updateTimer();
+    </script>
+</body>
+</html>
